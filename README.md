@@ -30,11 +30,7 @@ Now that we have available inside the EC2 instance all the needed information, w
 
 Personally I don’t use the full domain for this, but delegate two subdomains (to the same nameservers) like this:
 
-1
-2
-3
-4
-5
+
 ; ec2 zones:
 ec2.domain.com.      NS      ns1.domain.com.
 ec2.domain.com.      NS      ns2.domain.com.
@@ -44,28 +40,19 @@ and allow update access only to those zones. Of course if you prefer that you ca
 
 Generate a key using the dnssec-keygen utility like this:
 
-1
 dnssec-keygen -a HMAC-MD5 -b 512 -n USER user.domain.com.
 and this will create two files like this:
 
-1
-2
 Kuser.domain.com.+157+47950.key
 Kuser.domain.com.+157+47950.private
 Using the information from the public key add to your dns server configuration the key:
 
-1
-2
-3
-4
 key user.domain.com. {
     algorithm HMAC-MD5;
     secret "xAw7F/axmVSxsZ+V4LAZnkeYObjOaJjbVKf21Zl4WhxtRHdlhqWSeCdd fIVR6MhC8LSQoim7NfkWD2j7WT5AHw==";
 };
 where secret is the value from the public key, that in my example looks like this:
 
-1
-2
 cat Kuser.domain.com.+157+47950.key
 user.domain.com. IN KEY 0 3 157 xAw7F/axmVSxsZ+V4LAZnkeYObjOaJjbVKf21Zl4WhxtRHdlhqWSeCdd fIVR6MhC8LSQoim7NfkWD2j7WT5AHw==
 Finally we need to allow update access for the key:
